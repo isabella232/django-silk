@@ -168,6 +168,15 @@ class FilterMixin(object):
 
         return self._build_response(request, qs, start, count)
 
+    def _get_nested_field(self, obj, attr_key):
+        """Get a nested field for a given object, so 'a__b__c' returns obj.a.b.c"""
+        tokens = attr_key.split('__')
+        for field_name in tokens:
+            if not hasattr(obj, field_name):
+                return None
+            obj = getattr(obj, field_name)
+        return obj
+
     def _filter_raw_queryset_with_extra_filter_kwargs(self, qs, extra_filter_kwargs):
         obj_list = []
         for obj in qs:
@@ -178,7 +187,8 @@ class FilterMixin(object):
                 else:
                     attr_val = [attr_val]
 
-                if not hasattr(obj, attr_key) or getattr(obj, attr_key) not in attr_val:
+                value = self._get_nested_field(obj, attr_key)
+                if not value or value not in attr_val:
                     add_obj = False
                     break
 
@@ -197,7 +207,8 @@ class FilterMixin(object):
                 else:
                     attr_val = [attr_val]
 
-                if hasattr(obj, attr_key) and getattr(obj, attr_key) in attr_val:
+                value = self._get_nested_field(obj, attr_key)
+                if value and value in attr_val:
                     add_obj = False
                     break
 
