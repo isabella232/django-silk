@@ -172,13 +172,13 @@ class FilterMixin(object):
         obj_list = []
         for obj in qs:
             add_obj = True
-            for attr_name, attr_val in extra_filter_kwargs.items():
-                if attr_name.endswith('__in'):
-                    attr_name = attr_name.replace('__in', '')
+            for attr_key, attr_val in extra_filter_kwargs.items():
+                if attr_key.endswith('__in'):
+                    attr_key = attr_key.replace('__in', '')
                 else:
                     attr_val = [attr_val]
 
-                if not hasattr(obj, attr_name) or getattr(obj, attr_name) not in attr_val:
+                if not hasattr(obj, attr_key) or getattr(obj, attr_key) not in attr_val:
                     add_obj = False
                     break
 
@@ -191,13 +191,13 @@ class FilterMixin(object):
         obj_list = []
         for obj in qs:
             add_obj = True
-            for attr_name, attr_val in extra_exclude_kwargs.items():
-                if attr_name.endswith('__in'):
-                    attr_name = attr_name.replace('__in', '')
+            for attr_key, attr_val in extra_exclude_kwargs.items():
+                if attr_key.endswith('__in'):
+                    attr_key = attr_key.replace('__in', '')
                 else:
                     attr_val = [attr_val]
 
-                if hasattr(obj, attr_name) and getattr(obj, attr_name) in attr_val:
+                if hasattr(obj, attr_key) and getattr(obj, attr_key) in attr_val:
                     add_obj = False
                     break
 
